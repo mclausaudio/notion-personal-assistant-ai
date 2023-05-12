@@ -4,13 +4,24 @@ import fetch from 'node-fetch'
 import api from '../../utils/api';
 
 import UserInputField from './UserInputField'
+import OutputArea from './OutputArea'
 
 class UserInputSection extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userInput: '',
-      modelOutput: {},
+      apiResponse: {
+        code: 0,
+        status: '',
+        data: {
+          message: '',
+          category: '',
+          sentiment: '',
+          priority: '',
+          title: ''
+        }
+      },
       openAIKey: '',
       notionKey: '',
       databaseId: ''
@@ -18,6 +29,7 @@ class UserInputSection extends Component {
 
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.clearInputText = this.clearInputText.bind(this);
   }
 
   async componentDidMount() {
@@ -43,13 +55,21 @@ class UserInputSection extends Component {
     });
   };
 
+  clearInputText = () => {
+    this.setState(() => ({ userInput: '' }));
+  };
+
   handleSubmit = async () => {
     const { userInput, openAIKey, notionKey, databaseId } = this.state;
     const payload = { userInput, openAIKey, notionKey, databaseId };
-    const res = await api.processAndSubmitToNotion(payload);
-    this.setState({ modelOutput: res });
-    console.log("state", this.state);
-    return res;
+    try{
+      let res = await api.processAndSubmitToNotion(payload);
+      console.log('res', res);
+      this.setState({ apiResponse: res, userInput: '' });
+    } catch (error) {
+      console.log(error);
+      this.setState({ apiResponse: error, userInput: ''});
+    }
   };
 
   saveToLocalStorage = () => {
@@ -73,29 +93,65 @@ class UserInputSection extends Component {
   }
 
   render() {
-    const { userInput, modelOutput, openAIKey, notionKey, databaseId } = this.state;
-    const jsonOutput = JSON.stringify(modelOutput);
-    console.log('that state in render', this.state);
-    
+    const { userInput, apiResponse, openAIKey, notionKey, databaseId } = this.state;
+
     return (
-      <div>
-        <p>OpenAI API Key</p>
-        <UserInputField type="text" value={openAIKey} handleChange={(e) => { this.handleTextChange(e, 'openAIKey') }} />
-        <p>Notion API Key</p>
-        <UserInputField type="text" value={notionKey} handleChange={(e) => { this.handleTextChange(e, 'notionKey') }} />
-        <p>Notion Database ID</p>
-        <UserInputField type="text" value={databaseId} handleChange={(e) => { this.handleTextChange(e, 'databaseId') }} />
-
-        <button onClick={() => { this.saveToLocalStorage() }}>Save keys in local storage</button>
-        <button onClick={() => { this.clearLocalStorage() }}>Clear local storage</button>
-
-
-        <p>Input:</p>
-        <UserInputField type="text" value={userInput} handleChange={(e) => { this.handleTextChange(e, 'userInput') }}/>
-        <button onClick={this.handleSubmit}>Run</button>
-        <p>Output:</p>
-        <p>{jsonOutput}</p>
-      </div>
+      <section className="row">
+        <div className="col-md-8">
+          <h2>Input</h2>
+          <UserInputField type="textarea" value={userInput} handleChange={(e) => { this.handleTextChange(e, 'userInput') }} />
+          <button type="button" className="btn btn-primary my-3" onClick={this.handleSubmit}>Run</button>
+          <button type="button" className="btn btn-outline-secondary mx-3" onClick={this.clearInputText}>Clear</button>
+          <p>Output:</p>
+          <OutputArea response={apiResponse}/>
+        </div>
+        <div className="col-md-4">
+          <h3>Settings:</h3>
+          <div class="accordion" id="settingsAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  OpenAI
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#settingsAccordion">
+                <div class="accordion-body">
+                  <p>API Key</p>
+                  <UserInputField type="password" value={openAIKey} handleChange={(e) => { this.handleTextChange(e, 'openAIKey') }} />
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  Notion
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#settingsAccordion">
+                <div class="accordion-body">
+                  <p>API Key</p>
+                  <UserInputField type="password" value={notionKey} handleChange={(e) => { this.handleTextChange(e, 'notionKey') }} />
+                  <p>Database ID</p>
+                  <UserInputField type="text" value={databaseId} handleChange={(e) => { this.handleTextChange(e, 'databaseId') }} />
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  Local Storage
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#settingsAccordion">
+                <div class="accordion-body">
+                  <button type="button" class="btn btn-outline-secondary" onClick={() => { this.saveToLocalStorage() }}>Save keys in local storage</button>
+                  <button type="button" class="btn btn-outline-secondary" onClick={() => { this.clearLocalStorage() }}>Clear local storage</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     )
   }
 }

@@ -89,19 +89,38 @@ async function processUserText(userInput, openAIKey) {
 
 async function processAndSubmitToNotion(req, res) {
   const { userInput, openAIKey, notionKey, databaseId } = req.body;
-  console.log("Processing and submitting to Notion:", userInput, openAIKey, notionKey, databaseId)
+  console.log("Processing and submitting to Notion:", userInput, openAIKey, notionKey, databaseId);
+
   try {
     const databaseItem = await processUserText(userInput, openAIKey);
-    await addItemToDatabase(databaseItem, notionKey, databaseId);
+    const response  = await addItemToDatabase(databaseItem, notionKey, databaseId);
+
+    const data = {
+      "message": "Item added to database",
+      "category": response.properties.Category.select.name,
+      "sentiment": response.properties.Sentiment.select.name,
+      "priority": response.properties.Priority.number,
+      "title": response.properties.Title.title[0].plain_text
+    }
+    
+    console.log(data)
+    return res.status(201).json({ 
+      code: 201,
+      status: "success",
+      data: data
+    });
+
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Error processing user input" });
+    
+    return res.status(500).json({
+      code: 500,
+      status: "error",
+      data: {
+        message: "Error processing user input"
+      }
+    });
   }
-  
-
-
-  res.status(201).json({ message: "Item added to database" });
-
 }
 
 module.exports = { processAndSubmitToNotion };
+

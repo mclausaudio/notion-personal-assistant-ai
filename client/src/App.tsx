@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 
 import './App.css';
 
@@ -6,32 +7,29 @@ import UserInputSection from './components/inputs/UserInputSection';
 // src/components/inputs/UserInputSection
 function App() {
 
-  const getCurrentDayOfWeek = () => {
-    const dayOfWeek = new Date().getDay();
-    switch (dayOfWeek) {
-      case 0:
-        return "Sunday";
-      case 1:
-        return "Monday";
-      case 2:
-        return "Tuesday"
-      case 3:
-        return "Wednesday"
-      case 4:
-        return "Thursday"
-      case 5:
-        return "Friday"
-      case 6:
-        return "Saturday"
-    }
-  }
-
   return (
+    <>
+      <Helmet>
+        <meta charSet='UTF-8' />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossOrigin="anonymous"/>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossOrigin="anonymous"></script>
+      </Helmet>
+    
     <div className="App">
-      <header className="App-header">
+      <div className="container">
+        <header className="App-header">
+          
+        </header>
+        <div className="row">
+          <div className="col">
+              <h1>Notion Personal Assistant AI</h1> 
+          </div>
+        </div>        
         <UserInputSection />
-      </header>
+      </div>
     </div>
+    </>
   );
 }
 
