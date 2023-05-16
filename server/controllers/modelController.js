@@ -3,6 +3,24 @@ const { FewShotPromptTemplate, PromptTemplate, } = require("langchain/prompts");
 
 const { addItemToDatabase } = require("../utils/notionHelper");
 
+function getCurrentDateFormatted(){
+  const date = new Date();
+const year = date.getFullYear();
+const month = ("0" + (date.getMonth() + 1)).slice(-2); // Months are zero-based, so we add 1
+const day = ("0" + date.getDate()).slice(-2); // We pad the day with a zero if it's a single digit
+const formattedDate = `${year}-${month}-${day}`;
+
+return formattedDate;
+}
+
+// Write a function that gets current day of the week
+function getCurrentDayOfWeek() {
+  const date = new Date();
+  const dayOfWeek = date.getDay();
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  return daysOfWeek[dayOfWeek];
+}
+
 async function processUserText(userInput, openAIKey) {
   console.log("Processing user input:", userInput);
   const model = new OpenAI({
@@ -28,20 +46,21 @@ async function processUserText(userInput, openAIKey) {
     The second section of the output will be the title.  If the input's category is a "thought", the title will be the input text itself unmodified.  If the input's category is anything else, the title will be a summary of the input text.
     The third section of the output will be the priority.
     The fourth section of the output will be the sentiment.
+    The fifth section is a recommended due date in the format YYYY-MM-DD.  Given that the current date is ${getCurrentDayOfWeek()} ${getCurrentDateFormatted()}, consider the category, title, priority and sentiment to determine a recommended due date.  The recommended due date must always be after current date.
   `
 
   // First, create a list of few-shot examples.
   const examples = [
-    { input: "Finish the presentation for tomorrow's meeting", output: "work|Finish presentation|1|2" },
-    { input: "I need to call Renee", output: "social|Call Renee|2|2" },
-    { input: "I should start exercising more", output: "thought|I should start exercising more|personal|3|1" },
-    { input: "Buy groceries after work", output: "personal|Buy groceries|3|2" },
-    { input: "I love spending time with my friends", output: "thought|I love spending time with my friends|social|4|1" },
-    { input: "Prepare for the job interview next week", output: "work|Prepare for job interview|1|1" },
-    { input: "I've been feeling down lately", output: "thought|I've been feeling down lately|personal|4|3" },
-    { input: "Organize a surprise party for mom's birthday", output: "social|Organize surprise party|2|1" },
-    { input: "Finish the laundry this weekend", output: "personal|Finish laundry|3|2" },
-    { input: "I'm worried about the upcoming project deadline", output: "thought|I'm worried about the upcoming project deadline|work|3|3" }
+    { input: "Finish the presentation for tomorrow's meeting", output: "work|Finish presentation|1|2|2023-05-13" },
+    { input: "I need to call Yuki", output: "social|Call Yuki|2|2|2023-05-14" },
+    { input: "I should start exercising more", output: "thought|I should start exercising more|personal|3|1|2023-05-15" },
+    { input: "Buy groceries after work", output: "personal|Buy groceries|3|2|2023-05-15" },
+    { input: "I love spending time with my friends", output: "thought|I love spending time with my friends|social|4|1|2023-05-16" },
+    { input: "Prepare for the job interview next week", output: "work|Prepare for job interview|1|1|2023-05-13" },
+    { input: "I've been feeling happy lately", output: "thought|I've been feeling happy lately|personal|4|3|2023-05-16" },
+    { input: "Organize a surprise party for mom's birthday", output: "social|Organize surprise party|2|1|2023-05-14" },
+    { input: "Finish the laundry this weekend", output: "personal|Finish laundry|3|2|2023-05-15" },
+    { input: "I'm worried about the upcoming project deadline", output: "thought|I'm worried about the upcoming project deadline|work|3|3|2023-05-15" }
   ];
   // todo for above, make a frontend component so the user can set their own input and category examples.
 
@@ -77,22 +96,23 @@ async function processUserText(userInput, openAIKey) {
   let llmResponse = await model.call(formattedPrompt);
   llmResponse = llmResponse.startsWith(" ") ? llmResponse.slice(1) : llmResponse;
   const llmArray = llmResponse.split('|');
-  const databaseItem = {
+  const formattedData = {
     type: llmArray[0],
     title: llmArray[1],
     priority: Number(llmArray[2]),
-    sentiment: Number(llmArray[3])
+    sentiment: Number(llmArray[3]),
+    dueDate: llmArray[4]
   }
 
-  return databaseItem;
+  return formattedData;
 };
 
 async function processAndSubmitToNotion(req, res) {
   const { userInput, openAIKey, notionKey, databaseId } = req.body;
-  console.log("Processing and submitting to Notion:", userInput, openAIKey, notionKey, databaseId);
 
   try {
     const databaseItem = await processUserText(userInput, openAIKey);
+
     const response  = await addItemToDatabase(databaseItem, notionKey, databaseId);
 
     const data = {
@@ -100,10 +120,10 @@ async function processAndSubmitToNotion(req, res) {
       "category": response.properties.Category.select.name,
       "sentiment": response.properties.Sentiment.select.name,
       "priority": response.properties.Priority.number,
-      "title": response.properties.Title.title[0].plain_text
+      "title": response.properties.Title.title[0].plain_text,
+      "dueDate": response.properties["Due Date"].date.start
     }
     
-    console.log(data)
     return res.status(201).json({ 
       code: 201,
       status: "success",
@@ -111,7 +131,7 @@ async function processAndSubmitToNotion(req, res) {
     });
 
   } catch (error) {
-    
+    console.log(error);
     return res.status(500).json({
       code: 500,
       status: "error",

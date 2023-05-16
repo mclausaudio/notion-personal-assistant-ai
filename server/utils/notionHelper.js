@@ -14,9 +14,8 @@ const sentimentMap = {
 async function addItemToDatabase(itemToAdd, notionKey, databaseId) {
   const notion = new Client({ auth: notionKey });
   
-  const { type, title, priority } = itemToAdd;
+  const { type, title, priority, dueDate } = itemToAdd;
   const sentiment = sentimentMap[itemToAdd.sentiment];
-
   const properties = {
       "Category": {
         "id": "category",
@@ -45,8 +44,15 @@ async function addItemToDatabase(itemToAdd, notionKey, databaseId) {
             "content": title
           }
         }]
+      },
+      "Due Date": {
+        "id": "Due Date",
+        "type": "date",
+        "date": {
+          "start": dueDate          
+        }
       }
-    }
+  }
   
   try {
     // Create a new page with the provided properties in the specified database
@@ -56,6 +62,8 @@ async function addItemToDatabase(itemToAdd, notionKey, databaseId) {
       },
       properties,
     });
+
+    console.log(response)
 
     // console.log("Item added to database:", response);
     return response;
