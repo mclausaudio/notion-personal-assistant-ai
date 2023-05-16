@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function OutputArea(props: any) {
   const { response } = props;
-  const { data } = response;
+  const { data = {} } = response;
   const { message = '' } = data;
   
 
@@ -24,6 +24,7 @@ export default function OutputArea(props: any) {
           <li>Category: {data.category }</li>
           <li>Priority: {data.priority}</li>
           <li>Sentiment: {data.sentiment}</li>
+          <li>Due date: {data.dueDate}</li>
         </ul>
       </div>
     )

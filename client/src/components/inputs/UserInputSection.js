@@ -107,28 +107,28 @@ class UserInputSection extends Component {
         </div>
         <div className="col-md-4">
           <h3>Settings:</h3>
-          <div class="accordion" id="settingsAccordion">
-            <div class="accordion-item">
-              <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          <div className="accordion" id="settingsAccordion">
+            <div className="accordion-item">
+              <h2 className="accordion-header">
+                <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                   OpenAI
                 </button>
               </h2>
-              <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#settingsAccordion">
-                <div class="accordion-body">
+              <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#settingsAccordion">
+                <div className="accordion-body">
                   <p>API Key</p>
                   <UserInputField type="password" value={openAIKey} handleChange={(e) => { this.handleTextChange(e, 'openAIKey') }} />
                 </div>
               </div>
             </div>
-            <div class="accordion-item">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <div className="accordion-item">
+              <h2 className="accordion-header">
+                <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                   Notion
                 </button>
               </h2>
-              <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#settingsAccordion">
-                <div class="accordion-body">
+              <div id="collapseTwo" className="accordion-collapse collapse" data-bs-parent="#settingsAccordion">
+                <div className="accordion-body">
                   <p>API Key</p>
                   <UserInputField type="password" value={notionKey} handleChange={(e) => { this.handleTextChange(e, 'notionKey') }} />
                   <p>Database ID</p>
@@ -136,16 +136,16 @@ class UserInputSection extends Component {
                 </div>
               </div>
             </div>
-            <div class="accordion-item">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            <div className="accordion-item">
+              <h2 className="accordion-header">
+                <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                   Local Storage
                 </button>
               </h2>
-              <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#settingsAccordion">
-                <div class="accordion-body">
-                  <button type="button" class="btn btn-outline-secondary" onClick={() => { this.saveToLocalStorage() }}>Save keys in local storage</button>
-                  <button type="button" class="btn btn-outline-secondary" onClick={() => { this.clearLocalStorage() }}>Clear local storage</button>
+              <div id="collapseThree" className="accordion-collapse collapse" data-bs-parent="#settingsAccordion">
+                <div className="accordion-body">
+                  <button type="button" className="btn btn-outline-secondary" onClick={() => { this.saveToLocalStorage() }}>Save keys in local storage</button>
+                  <button type="button" className="btn btn-outline-secondary" onClick={() => { this.clearLocalStorage() }}>Clear local storage</button>
                 </div>
               </div>
             </div>
