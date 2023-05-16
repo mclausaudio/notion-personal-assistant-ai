@@ -8,15 +8,16 @@ export default function OutputArea(props: any) {
 
   console.log('response', response)
 
+  let messageMarkup;
 
-  if (response.code === 500) return (
-    <div className="alert alert-danger" role="alert">
-      {message}
-    </div>
-  )
-
-  if (response.code === 201) {
-    return (
+  if (response.code === 500) {
+    messageMarkup = (
+      <div className="alert alert-danger" role="alert">
+        {message}
+      </div>
+    )
+  } else if (response.code === 201) {
+    messageMarkup = (
       <div className="alert alert-success" role="alert">
         <p>{message}</p>
         <ul>
@@ -28,11 +29,17 @@ export default function OutputArea(props: any) {
         </ul>
       </div>
     )
+  } else {
+    messageMarkup = (
+      <div className="alert alert-light" role="alert">
+        <p>{message}</p>
+      </div>
+    )
   }
 
   return (
-    <div className="alert alert-light" role="alert">
-      <p>Please input your task...</p>
-    </div>
+    <>
+      {messageMarkup}
+    </>
   )
 }

@@ -6,22 +6,25 @@ import api from '../../utils/api';
 import UserInputField from './UserInputField'
 import OutputArea from './OutputArea'
 
+const emptyAPIResponse = {
+  code: 0,
+  status: '',
+  data: {
+    message: 'Please input your task...',
+    category: '',
+    sentiment: '',
+    priority: '',
+    title: '',
+    dueDate: ''
+  }
+}
+
 class UserInputSection extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userInput: '',
-      apiResponse: {
-        code: 0,
-        status: '',
-        data: {
-          message: '',
-          category: '',
-          sentiment: '',
-          priority: '',
-          title: ''
-        }
-      },
+      apiResponse: emptyAPIResponse,
       openAIKey: '',
       notionKey: '',
       databaseId: ''
@@ -56,10 +59,15 @@ class UserInputSection extends Component {
   };
 
   clearInputText = () => {
-    this.setState(() => ({ userInput: '' }));
+    this.setState(() => ({ userInput: '', apiResponse: emptyAPIResponse }));
   };
 
   handleSubmit = async () => {
+    this.setState({ apiResponse: {
+      data: {
+        message: 'Loading...',
+      }
+    }});
     const { userInput, openAIKey, notionKey, databaseId } = this.state;
     const payload = { userInput, openAIKey, notionKey, databaseId };
     try{
