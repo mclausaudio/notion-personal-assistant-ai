@@ -5,7 +5,7 @@ const processAndSubmitToNotion = async (props) => {
   const payload = { userInput, openAIKey, notionKey, databaseId };
   try {
     return new Promise((resolve, reject) => {
-      fetch('http://localhost:5000/api/model', {
+      fetch('http://localhost:8080/api/model', {
         method: 'POST',
         body: JSON.stringify(payload),
         headers: { 'Content-Type': 'application/json' }
@@ -18,7 +18,6 @@ const processAndSubmitToNotion = async (props) => {
           reject(err);
         });
     });
-
   } catch (error) {
     console.log(error);
   }
