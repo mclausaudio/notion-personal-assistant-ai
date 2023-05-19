@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import fetch from 'node-fetch'
 
 import api from '../../utils/api';
 
@@ -105,16 +104,16 @@ class UserInputSection extends Component {
 
     return (
       <section className="row">
-        <div className="col-md-8">
-          <h2>Input</h2>
+        <div className="col-md-12">
+          <h5>Input</h5>
           <UserInputField type="textarea" value={userInput} handleChange={(e) => { this.handleTextChange(e, 'userInput') }} />
           <button type="button" className="btn btn-primary my-3" onClick={this.handleSubmit}>Run</button>
           <button type="button" className="btn btn-outline-secondary mx-3" onClick={this.clearInputText}>Clear</button>
-          <p>Output:</p>
+          <h5>Output</h5>
           <OutputArea response={apiResponse}/>
         </div>
-        <div className="col-md-4">
-          <h3>Settings:</h3>
+        {/* <div className="col-md-4"> */}
+          <h5>Settings</h5>
           <div className="accordion" id="settingsAccordion">
             <div className="accordion-item">
               <h2 className="accordion-header">
@@ -157,7 +156,7 @@ class UserInputSection extends Component {
                 </div>
               </div>
             </div>
-          </div>
+          {/* </div> */}
         </div>
       </section>
     )

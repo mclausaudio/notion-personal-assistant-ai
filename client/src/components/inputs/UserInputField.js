@@ -9,7 +9,7 @@ const UserInputField = (props) => {
         <textarea
           value={value}
           onChange={handleChange}
-          className="form-control"
+          className="form-control w-100"
         />
       </>
     );
