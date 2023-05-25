@@ -34,7 +34,9 @@ async function addItemToDatabase(itemToAdd, notionKey, databaseId) {
       "Priority": {
         "id": "priority",
         "type": "number",
-        "number": priority
+        "select": {
+          name: priority
+        }
       },
       "Title": {
         "id": "title",

@@ -13,6 +13,10 @@ const formattedDate = `${year}-${month}-${day}`;
 return formattedDate;
 }
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 // Write a function that gets current day of the week
 function getCurrentDayOfWeek() {
   const date = new Date();
@@ -52,15 +56,15 @@ async function processUserText(userInput, openAIKey) {
   // First, create a list of few-shot examples.
   const examples = [
     { input: "Finish the presentation for tomorrow's meeting", output: "work|Finish presentation|1|2|2023-05-13" },
-    { input: "I need to call Yuki", output: "social|Call Yuki|2|2|2023-05-14" },
-    { input: "I should start exercising more", output: "thought|I should start exercising more|personal|3|1|2023-05-15" },
-    { input: "Buy groceries after work", output: "personal|Buy groceries|3|2|2023-05-15" },
-    { input: "I love spending time with my friends", output: "thought|I love spending time with my friends|social|4|1|2023-05-16" },
-    { input: "Prepare for the job interview next week", output: "work|Prepare for job interview|1|1|2023-05-13" },
-    { input: "I've been feeling happy lately", output: "thought|I've been feeling happy lately|personal|4|3|2023-05-16" },
-    { input: "Organize a surprise party for mom's birthday", output: "social|Organize surprise party|2|1|2023-05-14" },
-    { input: "Finish the laundry this weekend", output: "personal|Finish laundry|3|2|2023-05-15" },
-    { input: "I'm worried about the upcoming project deadline", output: "thought|I'm worried about the upcoming project deadline|work|3|3|2023-05-15" }
+    { input: "I need to call Yuki", output: "social|Call Yuki|2|2|2023-02-24" },
+    { input: "I should start exercising more", output: "thought|I should start exercising more|personal|3|1|2023-08-15" },
+    { input: "Buy groceries after work", output: "personal|Buy groceries|3|2|2023-04-03" },
+    { input: "I love spending time with my friends", output: "thought|I love spending time with my friends|social|4|1|2023-09-23" },
+    { input: "Prepare for the job interview next week", output: "work|Prepare for job interview|1|1|2023-08-13" },
+    { input: "I've been feeling happy lately", output: "thought|I've been feeling happy lately|personal|4|3|2023-07-29" },
+    { input: "Organize a surprise party for mom's birthday", output: "social|Organize surprise party|2|1|2023-10-31" },
+    { input: "Finish the laundry this weekend", output: "personal|Finish laundry|3|2|2023-02-02" },
+    { input: "I'm worried about the upcoming project deadline", output: "thought|I'm worried about the upcoming project deadline|work|3|3|2023-08-28" }
   ];
   // todo for above, make a frontend component so the user can set their own input and category examples.
 
@@ -96,10 +100,22 @@ async function processUserText(userInput, openAIKey) {
   let llmResponse = await model.call(formattedPrompt);
   llmResponse = llmResponse.startsWith(" ") ? llmResponse.slice(1) : llmResponse;
   const llmArray = llmResponse.split('|');
+
+  // Ensure that the due date is after the current date
+  const currentDate = new Date();
+  const dueDate = new Date(llmArray[4]);
+  if (dueDate < currentDate) {
+    llmArray[4] = getCurrentDateFormatted();
+  }
+
+  // Ensure strings are capitalized
+  llmArray[0] = capitalizeFirstLetter(llmArray[0]);
+  llmArray[1] = capitalizeFirstLetter(llmArray[1]);
+
   const formattedData = {
     type: llmArray[0],
     title: llmArray[1],
-    priority: Number(llmArray[2]),
+    priority: llmArray[2],
     sentiment: Number(llmArray[3]),
     dueDate: llmArray[4]
   }

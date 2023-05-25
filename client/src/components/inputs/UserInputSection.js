@@ -151,8 +151,9 @@ class UserInputSection extends Component {
               </h2>
               <div id="collapseThree" className="accordion-collapse collapse" data-bs-parent="#settingsAccordion">
                 <div className="accordion-body">
-                  <button type="button" className="btn btn-outline-secondary" onClick={() => { this.saveToLocalStorage() }}>Save keys in local storage</button>
+                  <button type="button" className="btn btn-outline-secondary me-0 mb-2 me-md-4 mb-md-0" onClick={() => { this.saveToLocalStorage() }}>Save keys in local storage</button>
                   <button type="button" className="btn btn-outline-secondary" onClick={() => { this.clearLocalStorage() }}>Clear local storage</button>
+                  <p className="small"><em>Note: Be sure to clear your local storage regularly, after each session.</em></p>
                 </div>
               </div>
             </div>
