@@ -33,9 +33,9 @@ async function addItemToDatabase(itemToAdd, notionKey, databaseId) {
       },
       "Priority": {
         "id": "priority",
-        "type": "number",
+        "type": "select",
         "select": {
-          name: priority
+          "name": priority
         }
       },
       "Title": {
@@ -65,12 +65,8 @@ async function addItemToDatabase(itemToAdd, notionKey, databaseId) {
       properties,
     });
 
-    console.log(response)
-
-    // console.log("Item added to database:", response);
     return response;
   } catch (error) {
-    console.error("Error adding item to database:", error);
     throw error;
   }
 }

@@ -21,7 +21,7 @@ const processAndSubmitToNotion = async (props) => {
         });
     });
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 };
 

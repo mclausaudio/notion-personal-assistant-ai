@@ -14,8 +14,9 @@ const Homepage = () => {
           </div>
           <div className="pt-5 pt-md-0 col-md-6">
             <h2>How it works</h2>
-            <p>This tool is integrates with an existing Notion database and utilizes OpenAI's LLM to summarize, categorize, prioritize and suggest a due date on a given text input, then write it to the database.  As you go through your day, type whatever comes to your mind (reminders, thoughts, ideas, tasks and todo items, etc.) and the LLM takes care of the rest.</p>
+            <p>This tool integrates with an existing Notion database and utilizes OpenAI's LLM to summarize, categorize, prioritize and suggest a due date on a given text input, then write it to the database.  As you go through your day, type whatever comes to your mind (reminders, thoughts, ideas, tasks and todo items, etc.) and the LLM takes care of the rest.</p>
             <p>Here's a simple step-by-step guide to getting started.</p>
+            <p className="small"><em>Note: You will need access to the GPT-4 API to use this.</em></p>
             <h5>Step 1: Create a Notion database.</h5>
             <p>You will first need to create a new Notion database with the following properties:</p>
             <ul>

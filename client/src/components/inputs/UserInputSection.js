@@ -43,18 +43,14 @@ class UserInputSection extends Component {
         openAIKey: apiKeys.openAIKey,
         notionKey: apiKeys.notionKey,
         databaseId: apiKeys.databaseId
-      }), () => {
-        console.log("state", this.state);
-      });
+      }));
     }
   }
 
   handleTextChange = (event, stateObjectKey) => {
     event.preventDefault();
     const newState = event.target.value;
-    this.setState({ [stateObjectKey]: newState }, () => {
-      console.log("state", this.state);
-    });
+    this.setState({ [stateObjectKey]: newState });
   };
 
   clearInputText = () => {
@@ -71,10 +67,8 @@ class UserInputSection extends Component {
     const payload = { userInput, openAIKey, notionKey, databaseId };
     try{
       let res = await api.processAndSubmitToNotion(payload);
-      console.log('res', res);
       this.setState({ apiResponse: res, userInput: '' });
     } catch (error) {
-      console.log(error);
       this.setState({ apiResponse: error, userInput: ''});
     }
   };

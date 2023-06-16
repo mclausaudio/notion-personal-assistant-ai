@@ -116,7 +116,7 @@ async function processUserText(userInput, openAIKey) {
     type: llmArray[0],
     title: llmArray[1],
     priority: llmArray[2],
-    sentiment: Number(llmArray[3]),
+    sentiment: llmArray[3],
     dueDate: llmArray[4]
   }
 
@@ -128,14 +128,13 @@ async function processAndSubmitToNotion(req, res) {
 
   try {
     const databaseItem = await processUserText(userInput, openAIKey);
-
     const response  = await addItemToDatabase(databaseItem, notionKey, databaseId);
 
     const data = {
       "message": "Item added to database",
       "category": response.properties.Category.select.name,
       "sentiment": response.properties.Sentiment.select.name,
-      "priority": response.properties.Priority.number,
+      "priority": response.properties.Priority.select.name,
       "title": response.properties.Title.title[0].plain_text,
       "dueDate": response.properties["Due Date"].date.start
     }

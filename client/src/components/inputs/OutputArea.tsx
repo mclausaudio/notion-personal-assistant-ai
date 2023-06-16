@@ -5,9 +5,6 @@ export default function OutputArea(props: any) {
   const { data = {} } = response;
   const { message = '' } = data;
   
-
-  console.log('response', response)
-
   let messageMarkup;
 
   if (response.code === 500) {
