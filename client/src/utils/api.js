@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 
-const API_DOMAIN = process.env.API_DOMAIN || 'http://localhost:8000';
+// const API_DOMAIN = process.env.API_DOMAIN || 'https://www.notionpersonalassistant.com';
+const API_DOMAIN = 'https://www.notionpersonalassistant.com';
 
 const processAndSubmitToNotion = async (props) => {
   const { userInput, openAIKey, notionKey, databaseId } = props;
