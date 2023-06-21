@@ -43,8 +43,8 @@ async function processUserText(userInput, openAIKey) {
       thought = Ideas, reflections, or mental impressions that arise spontaneously or as a result of contemplation or external stimuli.
       other = Any input that does not fit into the work, social, personal, or thought categories.
 
-    The priority is categorized as 1 for high importance, 2 for medium-high importance, 3 for medium-low importance, or 4 for low importance, indicating the level of priority or time sensitivity associated with the task or thought.
-    The sentiment is categorized as 1 for positive, 2 for neutral, or 3 for negative, reflecting the emotional tone or attitude expressed in the task or thought.
+    The priority is categorized as 1 for high importance, 2 for medium-high importance, 3 for medium-low importance, or 4 for low importance, indicating the level of priority or time sensitivity associated with the task or thought.  The priority must be a number and must not be more than 4 or less than 0.  If the input is a "Thought", set the priority to 4.
+    The sentiment is categorized as 1 for positive, 2 for neutral, or 3 for negative, reflecting the emotional tone or attitude expressed in the task or thought  The sentiment must not be more than 3 or less than 1.
 
     The first section of the output will begin with the category of the input, for example: "work|", "thought|", or "social|".
     The second section of the output will be the title.  If the input's category is a "thought", the title will be the input text itself unmodified.  If the input's category is anything else, the title will be a summary of the input text.
@@ -128,6 +128,20 @@ async function processAndSubmitToNotion(req, res) {
 
   try {
     const databaseItem = await processUserText(userInput, openAIKey);
+    // Make sure sentiment is between 1 and 3
+    let sentiment = databaseItem.sentiment;
+    const sentimentValue = Number(sentiment);
+    if (sentimentValue > 3 || sentimentValue < 1) {
+      databaseItem.sentiment = "2";
+    }
+
+    let priority = databaseItem.priority;
+    const priorityValue = Number(priority);
+    // Make sure priority is between 1 and 4
+    if (!(priorityValue < 4) || !(priorityValue >= 1)) {
+      databaseItem.priority = "4";
+    }
+    
     const response  = await addItemToDatabase(databaseItem, notionKey, databaseId);
 
     const data = {
