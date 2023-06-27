@@ -1,5 +1,7 @@
 # Notion Personal AI Assistant
 
+[Watch the demo!](https://youtu.be/PdE5K11aiZc)
+
 For a more detailed guide on using the application, please refer to our 'How it works' section of the homepage.
 
 ## Motivation
