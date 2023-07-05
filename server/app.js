@@ -7,7 +7,7 @@ const modelRoutes = require('./routes/modelRoutes');
 require('dotenv').config();
 
 var corsOptions = {
-  origin: ['https://www.notionpersonalassistant.com', 'http://localhost:8000'],
+  origin: 'https://www.notionpersonalassistant.com',
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
